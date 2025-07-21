@@ -13,37 +13,20 @@
       font-family: 'Courier New', monospace;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: center;
       height: 100vh;
       text-align: center;
-    }
-
-    nav {
-      margin-top: 20px;
-      margin-bottom: 20px;
-    }
-
-    nav button {
-      background: none;
-      border: 2px solid #00ff99;
-      color: #00ff99;
-      font-family: 'Courier New', monospace;
-      font-size: 18px;
-      padding: 10px 20px;
-      margin: 5px;
-      cursor: pointer;
-    }
-
-    nav button:hover {
-      background-color: #00ff99;
-      color: #0d0d0d;
     }
 
     .container {
       width: 90%;
       max-width: 800px;
       font-size: 5vw;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @media (min-width: 768px) {
@@ -65,20 +48,40 @@
     #tekst {
       white-space: pre-line;
     }
+
+    nav {
+      margin-bottom: 20px;
+    }
+
+    nav button {
+      background: none;
+      border: 2px solid #00ff99;
+      color: #00ff99;
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    nav button:hover {
+      background-color: #00ff99;
+      color: #0d0d0d;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Menu -->
+  <div class="container">
+    <div id="tekst" class="typewriter"></div>
+  </div>
+
+  <!-- Menu przeniesione na dół -->
   <nav>
     <button onclick="pokazSekcje('o')">O Lomistan</button>
     <button onclick="pokazSekcje('kontakt')">Kontakt</button>
     <button onclick="pokazSekcje('seans')">Seans</button>
   </nav>
-
-  <div class="container">
-    <div id="tekst" class="typewriter"></div>
-  </div>
 
   <!-- Dźwięk pisania -->
   <audio id="dzwiek" preload="auto">
@@ -88,7 +91,7 @@
   <script>
     const tekst = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. 
 
-Napisz e-maila albo zadzwoń aby sprawdzic dostępne terminy i umówic sie na seans. 
+Napisz e-maila albo zadzwoń aby sprawdzić dostępne terminy i umówić się na seans. 
 
 Seans składa się z około 90cio minutowego masażu, przed którym proponuję 5 minut medytacji i minutę patrzenia w oczy, a także krótką rozmowę dla celów zapoznawczych.
 
