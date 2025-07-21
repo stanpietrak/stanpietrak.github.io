@@ -70,7 +70,7 @@
       }
     }
 
-    window.onload = pisz;
+    DOMContentLoaded = pisz;
   </script>
 
 </body>
