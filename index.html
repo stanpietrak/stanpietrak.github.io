@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Efekt Pisania</title>
   <style>
     body {
@@ -39,6 +39,11 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0; }
     }
+
+    /* To tutaj */
+    #tekst {
+      white-space: pre-line; /* dzięki temu \n tworzy nową linię */
+    }
   </style>
 </head>
 <body>
@@ -49,10 +54,9 @@
 
   <!-- Dźwięk pisania -->
   <audio id="dzwiek" preload="auto">
-    <source src="typewriter.mp3" type="audio/mpeg">
+    <source src="typewriter.mp3" type="audio/mpeg" />
   </audio>
 
-  
   <script>
     const tekst = "Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. Napisz e-maila albo zadzwoń aby sprawdzic dostępne terminy i umówic sie na seans. \n Seans składa się z około 90cio minutowego masażu, przed którym proponuję 5 minut medytacji i minutę patrzenia w oczy, a także krótką rozmowę dla celów zapoznawczych. \nlomistan@proton.me \n+48604424533 \nZapraszam, \nStanisław Pietrak";
     const element = document.getElementById("tekst");
@@ -61,18 +65,22 @@
 
     function pisz() {
       if (i < tekst.length) {
-        element.textContent += tekst.charAt(i);
-        if (tekst.charAt(i) !== ' ') {
+        const znak = tekst.charAt(i);
+        element.textContent += znak;
+
+        if (znak !== ' ' && znak !== '\n') {
+          dzwiek.pause();
           dzwiek.currentTime = 0;
-          dzwiek.play();
+          dzwiek.playbackRate = 0.5;  // 2x wolniej, możesz zmienić jeśli chcesz
+          dzwiek.play().catch(() => {});
         }
+
         i++;
-        setTimeout(pisz, 60); // czas między literami
+        setTimeout(pisz, 60);
       }
     }
-    
-  document.addEventListener("DOMContentLoaded", pisz);
- //   window.onload = pisz;
+
+    document.addEventListener("DOMContentLoaded", pisz);
   </script>
 
 </body>
