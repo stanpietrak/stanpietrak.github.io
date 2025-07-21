@@ -51,14 +51,10 @@
   <audio id="dzwiek" preload="auto">
     <source src="typewriter.mp3" type="audio/mpeg">
   </audio>
-  if (tekst.charAt(i) !== ' ') {
-    dzwiek.currentTime = 0;
-    dzwiek.playbackRate = 0.5; // wolniejsze odtwarzanie
-    dzwiek.play().catch(() => {});
-  }
+
   
   <script>
-    const tekst = "Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. Napisz e-maila albo zadzwoń aby sprawdzic dostępne terminy i umówic sie na seans.";
+    const tekst = "Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. Napisz e-maila albo zadzwoń aby sprawdzic dostępne terminy i umówic sie na seans. \n Seans składa się z około 90cio minutowego masażu, przed którym proponuję 5 minut medytacji i minutę patrzenia w oczy, a także krótką rozmowę dla celów zapoznawczych. \nlomistan@proton.me \n+48604424533 \nZapraszam, \nStanisław Pietrak";
     const element = document.getElementById("tekst");
     const dzwiek = document.getElementById("dzwiek");
     let i = 0;
