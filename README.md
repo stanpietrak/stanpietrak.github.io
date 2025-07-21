@@ -48,9 +48,9 @@
   </div>
 
   <!-- Dźwięk pisania -->
-//  <audio id="dzwiek">
-//    <source src="https://www.soundjay.com/mechanical/typewriter-key-1.mp3" type="audio/mpeg">
-//  </audio>
+ <audio id="dzwiek">
+ <source src="https://www.soundjay.com/mechanical/typewriter-key-1.mp3" type="audio/mpeg">
+ </audio>
 
   <script>
     const tekst = "Witaj na mojej stronie. Piszę ten tekst specjalnie dla Ciebie...";
@@ -69,8 +69,8 @@
         setTimeout(pisz, 60); // czas między literami
       }
     }
-
-    document.addEventListener("DOMContentLoaded", pisz);
+    window.onload = pisz;
+   // document.addEventListener("DOMContentLoaded", pisz);
   </script>
 
 </body>
