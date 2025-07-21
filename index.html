@@ -12,10 +12,32 @@
       color: #00ff99;
       font-family: 'Courier New', monospace;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      justify-content: flex-start;
       align-items: center;
       height: 100vh;
       text-align: center;
+    }
+
+    nav {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    nav button {
+      background: none;
+      border: 2px solid #00ff99;
+      color: #00ff99;
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    nav button:hover {
+      background-color: #00ff99;
+      color: #0d0d0d;
     }
 
     .container {
@@ -40,13 +62,19 @@
       50% { opacity: 0; }
     }
 
-    /* To tutaj */
     #tekst {
-      white-space: pre-line; /* dzięki temu \n tworzy nową linię */
+      white-space: pre-line;
     }
   </style>
 </head>
 <body>
+
+  <!-- Menu -->
+  <nav>
+    <button onclick="pokazSekcje('o')">O Lomistan</button>
+    <button onclick="pokazSekcje('kontakt')">Kontakt</button>
+    <button onclick="pokazSekcje('seans')">Seans</button>
+  </nav>
 
   <div class="container">
     <div id="tekst" class="typewriter"></div>
@@ -58,13 +86,26 @@
   </audio>
 
   <script>
-    const tekst = "Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. \n\nNapisz e-maila albo zadzwoń aby sprawdzic dostępne terminy i umówic sie na seans. \n\nSeans składa się z około 90cio minutowego masażu, przed którym proponuję 5 minut medytacji i minutę patrzenia w oczy, a także krótką rozmowę dla celów zapoznawczych. \n\nlomistan@proton.me \n+48604424533 \n\nZapraszam, \nStanisław Pietrak";
-  
-  const element = document.getElementById("tekst");
+    const tekst = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. 
+
+Napisz e-maila albo zadzwoń aby sprawdzic dostępne terminy i umówic sie na seans. 
+
+Seans składa się z około 90cio minutowego masażu, przed którym proponuję 5 minut medytacji i minutę patrzenia w oczy, a także krótką rozmowę dla celów zapoznawczych.
+
+lomistan@proton.me 
++48604424533
+
+Zapraszam, 
+Stanisław Pietrak`;
+
+    const element = document.getElementById("tekst");
     const dzwiek = document.getElementById("dzwiek");
     let i = 0;
+    let pisanieAktywne = true;
+    let timeoutId = null;
 
     function pisz() {
+      if (!pisanieAktywne) return;
       if (i < tekst.length) {
         const znak = tekst.charAt(i);
         element.textContent += znak;
@@ -72,16 +113,37 @@
         if (znak !== ' ' && znak !== '\n') {
           dzwiek.pause();
           dzwiek.currentTime = 0;
-          dzwiek.playbackRate = 0.5;  // 2x wolniej, możesz zmienić jeśli chcesz
+          dzwiek.playbackRate = 0.5;
           dzwiek.play().catch(() => {});
         }
 
         i++;
-        setTimeout(pisz, 60);
+        timeoutId = setTimeout(pisz, 60);
       }
     }
 
+    function pokazWszystko() {
+      if (!pisanieAktywne) return;
+      pisanieAktywne = false;
+      clearTimeout(timeoutId);
+      element.textContent = tekst;
+    }
+
     document.addEventListener("DOMContentLoaded", pisz);
+    document.addEventListener("click", pokazWszystko);
+    document.addEventListener("touchstart", pokazWszystko);
+
+    // Obsługa menu
+    function pokazSekcje(sekcja) {
+      pokazWszystko();
+      if (sekcja === 'o') {
+        element.textContent = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69.`;
+      } else if (sekcja === 'kontakt') {
+        element.textContent = `lomistan@proton.me\n+48 604 424 533`;
+      } else if (sekcja === 'seans') {
+        element.textContent = `Seans składa się z około 90cio minutowego masażu,\nprzed którym proponuję 5 minut medytacji i minutę patrzenia w oczy,\na także krótką rozmowę dla celów zapoznawczych.`;
+      }
+    }
   </script>
 
 </body>
