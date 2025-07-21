@@ -12,7 +12,6 @@
       color: #00ff99;
       font-family: 'Courier New', monospace;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -23,7 +22,6 @@
       width: 90%;
       max-width: 800px;
       font-size: 5vw;
-      flex-grow: 1;
     }
 
     @media (min-width: 768px) {
@@ -46,19 +44,17 @@
       white-space: pre-line;
     }
 
-    #menu {
-      margin-top: 20px;
-      white-space: pre-line;
+    #extra {
+      margin-top: 1em;
+      display: none;
+      font-weight: bold;
     }
 
-    #menu strong {
-      display: block;
-      margin: 5px 0;
+    .clickable {
+      font-weight: bold;
       cursor: pointer;
-    }
-
-    #menu strong:hover {
-      color: #00ffaa;
+      color: #00ff99;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -66,7 +62,7 @@
 
   <div class="container">
     <div id="tekst" class="typewriter"></div>
-    <div id="menu"></div>
+    <div id="extra">zapraszam serdecznie</div>
   </div>
 
   <audio id="dzwiek" preload="auto">
@@ -74,91 +70,63 @@
   </audio>
 
   <script>
-    const tekst = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69.\n\nNapisz e-maila albo zadzwoń aby sprawdzić dostępne terminy i umówić się na seans.\n\nSeans składa się z około 90cio minutowego masażu, przed którym proponuję 5 minut medytacji i minutę patrzenia w oczy, a także krótką rozmowę dla celów zapoznawczych.\n\nlomistan@proton.me\n+48604424533\n\nZapraszam,\nStanisław Pietrak`;
+    const fullText = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. 
+
+Napisz e-maila albo zadzwoń aby sprawdzić dostępne terminy i umówić się na seans. 
+
+Seans składa się z około 90cio minutowego masażu, przed którym proponuję 5 minut medytacji i minutę patrzenia w oczy, a także krótką rozmowę dla celów zapoznawczych. 
+
+lomistan@proton.me 
++48604424533 
+
+<span class="clickable" id="zapraszam">Zapraszam</span>, 
+Stanisław Pietrak`;
 
     const element = document.getElementById("tekst");
-    const menuElement = document.getElementById("menu");
+    const extra = document.getElementById("extra");
     const dzwiek = document.getElementById("dzwiek");
     let i = 0;
-    let pisanieAktywne = true;
-    let timeoutId = null;
+    let interrupted = false;
 
-    function piszTekst(tekstDoNapisania, elementDocelowy, callback) {
-      let j = 0;
-      function piszZnak() {
-        if (j < tekstDoNapisania.length) {
-          const znak = tekstDoNapisania.charAt(j);
-          elementDocelowy.textContent += znak;
+    function pisz() {
+      if (interrupted) return;
 
-          if (znak !== ' ' && znak !== '\n') {
-            dzwiek.pause();
-            dzwiek.currentTime = 0;
-            dzwiek.playbackRate = 0.5;
-            dzwiek.play().catch(() => {});
-          }
+      if (i < fullText.length) {
+        const znak = fullText.charAt(i);
+        element.innerHTML += znak;
 
-          j++;
-          setTimeout(piszZnak, 60);
-        } else if (callback) {
-          callback();
+        if (znak !== ' ' && znak !== '\n' && znak !== '<') {
+          dzwiek.pause();
+          dzwiek.currentTime = 0;
+          dzwiek.playbackRate = 0.5;
+          dzwiek.play().catch(() => {});
         }
+
+        i++;
+        setTimeout(pisz, 60);
+      } else {
+        attachClickToZapraszam();
       }
-      piszZnak();
     }
 
-    function piszMenu() {
-      const menuSlowa = ["O", "Seans", "Kontakt"];
-      let index = 0;
+    function showAll() {
+      interrupted = true;
+      element.innerHTML = fullText;
+      attachClickToZapraszam();
+    }
 
-      function piszJednoSlow() {
-        if (index < menuSlowa.length) {
-          const slowo = menuSlowa[index];
-          const el = document.createElement("strong");
-          el.textContent = '';
-          el.onclick = () => pokazSekcje(slowo.toLowerCase());
-          menuElement.appendChild(el);
-
-          piszTekst(slowo, el, () => {
-            menuElement.appendChild(document.createTextNode('\n'));
-            index++;
-            piszJednoSlow();
-          });
-        }
+    function attachClickToZapraszam() {
+      const zapraszam = document.getElementById("zapraszam");
+      if (zapraszam) {
+        zapraszam.addEventListener("click", () => {
+          extra.style.display = "block";
+        });
       }
-
-      piszJednoSlow();
     }
 
-    function pokazWszystko() {
-      if (!pisanieAktywne) return;
-      pisanieAktywne = false;
-      clearTimeout(timeoutId);
-      element.textContent = tekst;
-      piszMenu();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      piszTekst(tekst, element, piszMenu);
-    });
-
-    document.addEventListener("click", pokazWszystko);
-    document.addEventListener("touchstart", pokazWszystko);
-
-    function pokazSekcje(sekcja) {
-      menuElement.innerHTML = '';
-      element.textContent = '';
-
-      let tresc = '';
-      if (sekcja === 'o') {
-        tresc = `Lomistan to kraina relaksu na wyciągnięcie dłoni\nna warszawskim Mokotowie przy ul. Kazimierzowskiej 69.`;
-      } else if (sekcja === 'kontakt') {
-        tresc = `lomistan@proton.me\n+48 604 424 533`;
-      } else if (sekcja === 'seans') {
-        tresc = `Seans trwa około 90 minut.\nPoprzedzony jest 5 minutami medytacji,\n1 minutą patrzenia w oczy oraz krótką rozmową.`;
-      }
-
-      piszTekst(tresc, element, piszMenu);
-    }
+    document.addEventListener("DOMContentLoaded", pisz);
+    document.addEventListener("click", showAll);
+    document.addEventListener("touchstart", showAll);
   </script>
 
 </body>
