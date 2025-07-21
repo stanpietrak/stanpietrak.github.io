@@ -70,7 +70,7 @@
       }
     }
 
-    DOMContentLoaded = pisz;
+    document.addEventListener("DOMContentLoaded", pisz);
   </script>
 
 </body>
