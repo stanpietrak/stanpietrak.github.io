@@ -70,7 +70,7 @@
   </audio>
 
   <script>
-    const fullText = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. 
+    let tekstRaw = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. 
 
 Napisz e-maila albo zadzwoń aby sprawdzić dostępne terminy i umówić się na seans. 
 
@@ -79,7 +79,7 @@ Seans składa się z około 90cio minutowego masażu, przed którym proponuję 5
 lomistan@proton.me 
 +48604424533 
 
-<span class="clickable" id="zapraszam">Zapraszam</span>, 
+Zapraszam, 
 Stanisław Pietrak`;
 
     const element = document.getElementById("tekst");
@@ -91,11 +91,11 @@ Stanisław Pietrak`;
     function pisz() {
       if (interrupted) return;
 
-      if (i < fullText.length) {
-        const znak = fullText.charAt(i);
-        element.innerHTML += znak;
+      if (i < tekstRaw.length) {
+        const znak = tekstRaw.charAt(i);
+        element.textContent += znak;
 
-        if (znak !== ' ' && znak !== '\n' && znak !== '<') {
+        if (znak !== ' ' && znak !== '\n') {
           dzwiek.pause();
           dzwiek.currentTime = 0;
           dzwiek.playbackRate = 0.5;
@@ -105,13 +105,25 @@ Stanisław Pietrak`;
         i++;
         setTimeout(pisz, 60);
       } else {
+        // Po zakończeniu: zamień "Zapraszam" na klikalne
+        element.innerHTML = element.innerHTML.replace(
+          /Zapraszam/,
+          '<span id="zapraszam" class="clickable">Zapraszam</span>'
+        );
         attachClickToZapraszam();
       }
     }
 
     function showAll() {
+      if (interrupted) return;
       interrupted = true;
-      element.innerHTML = fullText;
+      // Pokaż cały tekst od razu
+      element.textContent = tekstRaw;
+      // Zamień "Zapraszam" na klikalne
+      element.innerHTML = element.innerHTML.replace(
+        /Zapraszam/,
+        '<span id="zapraszam" class="clickable">Zapraszam</span>'
+      );
       attachClickToZapraszam();
     }
 
