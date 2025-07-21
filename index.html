@@ -22,6 +22,7 @@
       width: 90%;
       max-width: 800px;
       font-size: 5vw;
+      white-space: pre-line;
     }
 
     @media (min-width: 768px) {
@@ -40,21 +41,14 @@
       50% { opacity: 0; }
     }
 
-    #tekst {
-      white-space: pre-line;
-    }
-
-    #extra {
-      margin-top: 1em;
-      display: none;
-      font-weight: bold;
-    }
-
     .clickable {
       font-weight: bold;
       cursor: pointer;
-      color: #00ff99;
-      text-decoration: underline;
+    }
+
+    .hidden-message {
+      margin-top: 10px;
+      white-space: pre-line;
     }
   </style>
 </head>
@@ -62,7 +56,7 @@
 
   <div class="container">
     <div id="tekst" class="typewriter"></div>
-    <div id="extra">zapraszam serdecznie</div>
+    <div id="extra" class="hidden-message"></div>
   </div>
 
   <audio id="dzwiek" preload="auto">
@@ -70,7 +64,7 @@
   </audio>
 
   <script>
-    let tekstRaw = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. 
+    const baseText = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. 
 
 Napisz e-maila albo zadzwoń aby sprawdzić dostępne terminy i umówić się na seans. 
 
@@ -80,19 +74,25 @@ lomistan@proton.me
 +48604424533 
 
 Zapraszam, 
-Stanisław Pietrak`;
+Stanisław Pietrak
+
+`;
+
+    const finalOptions = [
+      { label: "referencje", text: "tutaj napisz jak byłeś to jak było" },
+      { label: "google maps", text: "link do googla" },
+      { label: "aspekty prawno-organizacyjne", text: `Aktualnie nie mam zarejestrowanej firmy, dla legalnej działalności bez firmy muszę poczekać do 2027 roku ze względu na wymóg czasowy. Ze względu na powyższe, najchętniej umawiam się na wymiany barterowe z dodatkowym pokryciem kosztu wynajmu gabinetu w wysokości 40 pln za seans. Ubezpieczenie mam w Allianz o nr.` }
+    ];
 
     const element = document.getElementById("tekst");
     const extra = document.getElementById("extra");
     const dzwiek = document.getElementById("dzwiek");
     let i = 0;
-    let interrupted = false;
+    let writingDone = false;
 
     function pisz() {
-      if (interrupted) return;
-
-      if (i < tekstRaw.length) {
-        const znak = tekstRaw.charAt(i);
+      if (i < baseText.length) {
+        const znak = baseText.charAt(i);
         element.textContent += znak;
 
         if (znak !== ' ' && znak !== '\n') {
@@ -105,40 +105,33 @@ Stanisław Pietrak`;
         i++;
         setTimeout(pisz, 60);
       } else {
-        // Po zakończeniu: zamień "Zapraszam" na klikalne
-        element.innerHTML = element.innerHTML.replace(
-          /Zapraszam/,
-          '<span id="zapraszam" class="clickable">Zapraszam</span>'
-        );
-        attachClickToZapraszam();
+        writingDone = true;
+        dodajOpcje();
       }
     }
 
-    function showAll() {
-      if (interrupted) return;
-      interrupted = true;
-      // Pokaż cały tekst od razu
-      element.textContent = tekstRaw;
-      // Zamień "Zapraszam" na klikalne
-      element.innerHTML = element.innerHTML.replace(
-        /Zapraszam/,
-        '<span id="zapraszam" class="clickable">Zapraszam</span>'
-      );
-      attachClickToZapraszam();
-    }
-
-    function attachClickToZapraszam() {
-      const zapraszam = document.getElementById("zapraszam");
-      if (zapraszam) {
-        zapraszam.addEventListener("click", () => {
-          extra.style.display = "block";
+    function dodajOpcje() {
+      finalOptions.forEach(option => {
+        const div = document.createElement("div");
+        div.textContent = option.label;
+        div.classList.add("clickable");
+        div.addEventListener("click", () => {
+          extra.textContent = option.text;
         });
-      }
+        element.appendChild(document.createElement("br"));
+        element.appendChild(div);
+      });
     }
 
     document.addEventListener("DOMContentLoaded", pisz);
-    document.addEventListener("click", showAll);
-    document.addEventListener("touchstart", showAll);
+
+    document.addEventListener("click", () => {
+      if (!writingDone) {
+        element.textContent = baseText;
+        writingDone = true;
+        dodajOpcje();
+      }
+    });
   </script>
 
 </body>
