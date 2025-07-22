@@ -13,16 +13,17 @@
       font-family: 'Courier New', monospace;
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100vh;
+      align-items: flex-start;
+      padding-top: 40px;
       text-align: center;
+      min-height: 100vh;
     }
 
     .container {
       width: 90%;
       max-width: 800px;
       font-size: 5vw;
-      white-space: pre-line;
+      padding-bottom: 120px;
     }
 
     @media (min-width: 768px) {
@@ -41,98 +42,89 @@
       50% { opacity: 0; }
     }
 
-    .clickable {
-      font-weight: bold;
-      cursor: pointer;
+    #tekst {
+      white-space: pre-line;
     }
 
-    .hidden-message {
+    .menu {
+      margin-top: 20px;
+    }
+
+    .menu-item {
+      font-weight: bold;
+      cursor: pointer;
       margin-top: 10px;
-      white-space: pre-line;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .popup {
+      margin-top: 10px;
+      color: #00ff99;
     }
   </style>
 </head>
 <body>
-
-  <div class="container">
+  <div class="container" id="main-container">
     <div id="tekst" class="typewriter"></div>
-    <div id="extra" class="hidden-message"></div>
+    <div class="menu hidden" id="menu">
+      <div class="menu-item" onclick="togglePopup('ref')">referencje</div>
+      <div class="popup hidden" id="ref">tutaj napisz jak byles to jak bylo</div>
+
+      <div class="menu-item" onclick="togglePopup('maps')">google maps</div>
+      <div class="popup hidden" id="maps">link do googla</div>
+
+      <div class="menu-item" onclick="togglePopup('legal')">aspekty prawno-organizacyjne</div>
+      <div class="popup hidden" id="legal">
+        Aktualnie nie mam zarejestrowanej firmy, dla legalnej działalności bez firmy muszę poczekać do 2027 roku ze względu na wymóg czasowy. Ze względu na powyższe, najchętniej umawiam się na wymiany barterowe z dodatkowym pokryciem kosztu wynajmu gabinetu w wysokości 40 pln za seans. Ubezpieczenie mam w Allianz o nr.
+      </div>
+    </div>
   </div>
 
-  <audio id="dzwiek" preload="auto">
-    <source src="typewriter.mp3" type="audio/mpeg" />
-  </audio>
-
   <script>
-    const baseText = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69. 
-
-Napisz e-maila albo zadzwoń aby sprawdzić dostępne terminy i umówić się na seans. 
-
-Seans składa się z około 90cio minutowego masażu, przed którym proponuję 5 minut medytacji i minutę patrzenia w oczy, a także krótką rozmowę dla celów zapoznawczych. 
-
-lomistan@proton.me 
-+48604424533 
-
-Zapraszam, 
-Stanisław Pietrak
-
-`;
-
-    const finalOptions = [
-      { label: "referencje", text: "tutaj napisz jak byłeś to jak było" },
-      { label: "google maps", text: "link do googla" },
-      { label: "aspekty prawno-organizacyjne", text: `Aktualnie nie mam zarejestrowanej firmy, dla legalnej działalności bez firmy muszę poczekać do 2027 roku ze względu na wymóg czasowy. Ze względu na powyższe, najchętniej umawiam się na wymiany barterowe z dodatkowym pokryciem kosztu wynajmu gabinetu w wysokości 40 pln za seans. Ubezpieczenie mam w Allianz o nr.` }
-    ];
+    const tekst = `Lomistan to kraina relaksu na wyciągnięcie dłoni na warszawskim Mokotowie przy ul. Kazimierzowskiej 69.\n\nNapisz e-maila albo zadzwoń aby sprawdzic dostępne terminy i umówic sie na seans.\n\nSeans składa się z około 90cio minutowego masażu Lomi Lomi Akamana, przed którym proponuję 5 minut medytacji i minutę patrzenia w oczy, a także krótką rozmowę dla celów zapoznawczych.\n\nlomistan@proton.me\n+48604424533\n\nZapraszam,\nStanisław Pietrak`;
 
     const element = document.getElementById("tekst");
-    const extra = document.getElementById("extra");
-    const dzwiek = document.getElementById("dzwiek");
+    const menu = document.getElementById("menu");
+    const container = document.getElementById("main-container");
+
     let i = 0;
-    let writingDone = false;
+    let pisanieSkonczone = false;
+    let typingTimeout;
 
     function pisz() {
-      if (i < baseText.length) {
-        const znak = baseText.charAt(i);
+      if (i < tekst.length) {
+        const znak = tekst.charAt(i);
         element.textContent += znak;
-
-        if (znak !== ' ' && znak !== '\n') {
-          dzwiek.pause();
-          dzwiek.currentTime = 0;
-          dzwiek.playbackRate = 0.5;
-          dzwiek.play().catch(() => {});
-        }
-
         i++;
-        setTimeout(pisz, 60);
+        typingTimeout = setTimeout(pisz, 60);
       } else {
-        writingDone = true;
-        dodajOpcje();
+        pisanieSkonczone = true;
+        menu.classList.remove("hidden");
+        container.style.paddingBottom = "100px";
       }
     }
 
-    function dodajOpcje() {
-      finalOptions.forEach(option => {
-        const div = document.createElement("div");
-        div.textContent = option.label;
-        div.classList.add("clickable");
-        div.addEventListener("click", () => {
-          extra.textContent = option.text;
-        });
-        element.appendChild(document.createElement("br"));
-        element.appendChild(div);
-      });
+    function pokazWszystko() {
+      if (!pisanieSkonczone) {
+        clearTimeout(typingTimeout);
+        element.textContent = tekst;
+        pisanieSkonczone = true;
+        menu.classList.remove("hidden");
+        container.style.paddingBottom = "100px";
+      }
+    }
+
+    function togglePopup(id) {
+      const popup = document.getElementById(id);
+      popup.classList.toggle("hidden");
     }
 
     document.addEventListener("DOMContentLoaded", pisz);
-
-    document.addEventListener("click", () => {
-      if (!writingDone) {
-        element.textContent = baseText;
-        writingDone = true;
-        dodajOpcje();
-      }
-    });
+    document.addEventListener("click", pokazWszystko);
+    document.addEventListener("touchstart", pokazWszystko);
   </script>
-
 </body>
 </html>
