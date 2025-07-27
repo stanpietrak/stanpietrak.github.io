@@ -69,6 +69,8 @@
 <body>
   <div class="container" id="main-container">
     <div id="tekst" class="typewriter"></div>
+
+<!--
     <div class="menu hidden" id="menu">
       <div class="menu-item" onclick="togglePopup('ref')">referencje</div>
     <div class="popup hidden" id="ref">tutaj napisz jak byles to jak bylo</div>
@@ -81,6 +83,8 @@
         Aktualnie nie mam zarejestrowanej firmy, dla legalnej działalności bez firmy muszę poczekać do 2027 roku ze względu na wymóg czasowy. Ze względu na powyższe, najchętniej umawiam się na wymiany barterowe z dodatkowym pokryciem kosztu wynajmu gabinetu w wysokości 40 pln za seans. Ubezpieczenie mam w Allianz o nr.
       </div>
     </div>
+-->
+    
   </div>
 
   <script>
@@ -126,5 +130,29 @@
     document.addEventListener("click", pokazWszystko);
     document.addEventListener("touchstart", pokazWszystko);
   </script>
+
+<pre id="massage-animation"></pre>
+
+<script>
+  const frames = [
+    "  \\\\   /\n  =======",
+    "  /   \\\\\n  =======",
+    "   \\\\ //\n  =======",
+    "   / \\\\\n  ======="
+  ];
+
+  let animFrame = 0;
+  const animElement = document.getElementById("massage-animation");
+
+  function animateMassage() {
+    animElement.textContent = frames[animFrame % frames.length];
+    animFrame++;
+  }
+
+  setInterval(animateMassage, 500);
+</script>
+  
+
+  
 </body>
 </html>
