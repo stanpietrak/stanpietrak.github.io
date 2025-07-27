@@ -142,26 +142,7 @@
     document.addEventListener("touchstart", pokazWszystko);
   </script>
 
-<pre id="massage-animation"></pre>
 
-<script>
-  const frames = [
-    "  \\\\   /\n  =======",
-    "  /   \\\\\n  =======",
-    "   \\\\ //\n  =======",
-    "   / \\\\\n  ======="
-  ];
-
-  let animFrame = 0;
-  const animElement = document.getElementById("massage-animation");
-
-  function animateMassage() {
-    animElement.textContent = frames[animFrame % frames.length];
-    animFrame++;
-  }
-
-  setInterval(animateMassage, 500);
-</script>
   
 
   
